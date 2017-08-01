@@ -1,0 +1,269 @@
+#app {
+  overflow: hidden;
+}
+.intrest {
+  position: relative;
+  width: 100%;
+  height: 1.5rem;
+  padding: 0.78rem 0;
+  text-align: center;
+  background: -webkit-linear-gradient(to bottom, #fe9031 0%, #ffb15b 100%);
+  background: -moz-linear-gradient(to bottom, #fe9031 0%, #ffb15b 100%);
+  background: -ms-linear-gradient(to bottom, #fe9031 0%, #ffb15b 100%);
+  background: -o-linear-gradient(to bottom, #fe9031 0%, #ffb15b 100%);
+  background: linear-gradient(to bottom, #fe9031 0%, #ffb15b 100%);
+  background-image: -moz-linear-gradient(top, #fe9031, #ffb15b);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fe9031), color-stop(1, #ffb15b)); /* Saf4+, Chrome */
+  z-index: 10;
+}
+.intrest dl {
+  width: 50%;
+  color: #fff;
+}
+.intrest dl dt {
+  height: 1rem;
+  overflow: hidden;
+}
+.intrest dl:first-child {
+  box-sizing: border-box;
+  border-right: 1px dashed #fff;
+}
+.indicator {
+  padding: 0.3rem;
+  background-color: #fff;
+}
+[v-cloak] {
+  display: none;
+}
+.indicator .rate,.indicator .day {
+  margin-top: 0.2rem;
+}
+.indicator .day,
+.indicator .investment,
+.indicator .rate {
+  line-height: 1rem;
+  padding:1px 0;
+}
+.indicator .day .lf,
+.indicator .investment .lf,
+.indicator .rate .lf {
+  color: rgb(102,102,102)
+}
+.indicator .day div.rg,
+.indicator .investment div.rg,
+.indicator .rate div.rg {
+  width: 65%;
+  border: 1px solid #ddd;
+}
+.indicator .day div.rg input,
+.indicator .investment div.rg input,
+.indicator .rate div.rg input {
+  width: 85%;
+  text-align: center;
+  line-height: 1rem\9;
+}
+.indicator .day div.rg span,
+.indicator .investment div.rg span,
+.indicator .rate div.rg span {
+  display: inline-block;
+  line-height: 1rem;
+}
+.indicator .rate .label {
+  position: relative;
+}
+.indicator .rate .rate-icon {
+  position: relative;
+  top: .35rem;
+  left: -.4rem;
+  margin: 0 .5rem;
+  width: .35rem;
+  vertical-align: top;
+  z-index: 0;
+}
+.indicator .rate .rate-info {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  color: rgba(51,51,51,1);
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  background: #fff;
+  border-radius: .25rem;
+  z-index: 100;
+}
+.indicator .rate .rate-info  span {
+  display: block;
+  padding: .56rem;
+  line-height: .7rem;
+}
+.indicator .rate .rate-info .btn {
+  display: inline-block;
+  width: 100%;
+  height: 1.26rem;
+  line-height: 1.26rem;
+  letter-spacing: .1rem;
+  color: rgb(64, 175, 254);
+  cursor: pointer;
+  text-align: center;
+  border-radius: 0 0 .25rem .25rem;
+  border-top: 1px solid rgb(208, 208, 208);
+  background: rgb(242, 242, 242);
+}
+
+.invest {
+  display: block;
+  margin: 0.6rem 4%;
+  width: 92%;
+  height: 1.33333333rem;
+  line-height: 1.33333333rem;
+  text-align: center;
+  color: #fff;
+  border-radius: 0.10666667rem;
+  cursor: pointer;
+}
+.invest-txt {
+  display: block;
+  margin: 0 auto;
+  width: 37.333333%;
+  height: .6rem;
+  line-height: .6rem;
+  text-align: center;
+  color: #777;
+}
+/* 选项卡 */
+.mask {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background: rgba(0,0,0,.6);
+  z-index: -1;
+}
+.mask-move {
+  opacity: 1;
+  z-index: 0;
+  -webkit-transition: opacity .5s;
+  transition: opacity .5s;
+}
+.select-box {
+  position: relative;
+  z-index: 1;
+}
+.select-box .slt-title {
+  background: #fff;
+}
+.select-box .slt-title .title {
+  margin-left: 4%;
+  width: 28.3%;
+  height: 1.36rem;
+  line-height: 1.36rem;
+  color: #666;
+}
+.select-box .slt-title .items-name {
+  position: relative;
+  margin-right: 4%;
+  width: 63.6%;
+  height: 1.36rem;
+  line-height: 1.36rem;
+  color: #333;
+}
+.select-box .slt-title .items-name:after {
+  display: inline-block;
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  border-top: 1px solid #ddd;
+}
+.select-box .slt-title .items-name .icon {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0.53333333rem;
+  padding: 0.10666667rem 0;
+  width: auto;
+  height: 0.18666667rem;
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+  -webkit-transition: -webkit-transform .3s ease;
+  transition: transform .3s ease;
+}
+.select-box .slt-title .items-name .icon-open {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: -webkit-transform .3s ease;
+  transition: transform .3s ease;
+}
+.select-box .infos {
+  display: inline-block;
+  padding-left: 32.3%;
+  width: 67.6%;
+  height: 0.82666667rem;
+  line-height: 0.82666667rem;
+  color: #999;
+}
+.select-box .gutter {
+  height: 0.26666667rem;
+  background: rgb(246, 246, 246);
+}
+.select-box .slt-content {
+  position: absolute;
+  left: 0;
+  top: 2.45333334rem;
+  width: 100%;
+  opacity: 0.5;
+  z-index: -100;
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+  -webkit-transition: z-index .3s,opacity .3s, transform .3s ease-out;
+  transition:  z-index .3s,opacity .3s, transform .3s ease-out;
+  background: #f9f9f9;
+}
+.select-box .transform {
+  -webkit-transform: translateY(0%);
+  transform: translateY(0%);
+  opacity: 1;
+  z-index: 10;
+  -webkit-transition: z-index .3s ease-in-out,opacity .3s ease-in, transform .3s ease-out;
+  transition:  z-index .3s ease-in-out,opacity .3s ease-in, transform .3s ease-out;
+}
+.select-box .slt-content li {
+  position: relative;
+  height: 1.36rem;
+  line-height: 1.36rem;
+  color: #333;
+  background: #f9f9f9;
+}
+.select-box .slt-content li:after {
+  display: inline-block;
+  content: '';
+  position: absolute;
+  right: 4%;
+  bottom: 0;
+  width: 92%;
+  height: 0;
+  border-bottom: 1px solid #ddd;
+}
+.select-box .slt-content li i {
+  display: inline-block;
+  vertical-align: top;
+  margin: .4933rem  2.05333333rem 0 6.666667%;
+  width: .4rem;
+  height: .4rem;
+  border-radius: 50%;
+  border: 1px solid #FF8A50;
+  box-sizing: border-box;
+}
+.select-box .slt-content li.completed i {
+  background: #FF8A50;
+}
+.showed {
+  display: block !important;
+}

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>理财计算器</title>
+    <link rel="stylesheet" href="https://m.wangcaigu.com/static/default/common/css/base.css">
+    <link rel="stylesheet" href="https://m.wangcaigu.com/static/default/common/css/comfont.css">
+        <link rel="stylesheet" href="calculator.css">
+    <script src="https://m.wangcaigu.com/static/flexibleJs/lib.flexible.js"></script>
+    <script src="https://m.wangcaigu.com/static/default/common/js/vue.min.js"></script>
+</head>
+<body>
+<!--    vue单页面实例，总结：
+
+1. v-cloak 指令 ：
+    HTML 绑定 Vue实例，在页面加载时会闪烁问题。
+    v-cloak，这个指令保持在元素上直到关联实例结束编译，即不会显示，直到编译结束才显示。
+    <div v-cloak>
+      {{ message }}
+    </div>
+    [v-cloak] {
+      display: none;
+    }
+2. v-show 指令 ：
+   v-show="isWeixin"  //isWeixin 为true 或false（在data里取值替换，也可以在方法里动态改变值）
+
+3. @click 指令 ：点击，监听 DOM 事件
+    @click ＝＝ v-on:click
+    @click="isInfo" //selectMenu为methods中的方法函数
+    事件中取反操作：
+    isInfo:function() {
+        this.isExplain = !this.isExplain;
+        this.isExplains = !this.isExplains;
+    }
+4. :class 指令 ：
+    动态添加class类： isActive ＝＝ true,则取前者（空），后者class类名可以设计动画
+   :class="[ isActive ? '' : 'icon-open' ]"
+
+5. v-for 指令 ：
+   v-for="item in items" 循环输入数组items总的每一项item(item名可自定义，items必须是data里面的参数)
+
+   ps: 选中当前这个项目，可使用它的参数值的true or false，来给它动态添加class
+
+6. v-if＝"'" v-else 条件指令 ：
+   <span class="f12" v-if="dateType > 0">个月</span> // dateType为data中的数据参数
+   <span class="f12" v-else>天</span>
+
+7. v-model 数据双向绑定指令 ：
+   v-model="rate"  {{rate}}  前者和后者，双向绑定
+   负责监听用户的输入事件以更新数据。
+
+8. created 在实例被创建之后被调用(生命周期钩子)
+    created: function(){
+            if (this.deal_id == '') { //在无具体项目时，不显示"优选项目"
+                this.isWeixin = !this.isWeixin;
+            }
+    }
+
+9. computed   计算属性  基于它们的依赖进行缓存的
+    计算属性computed只有在它的相关依赖发生改变时才会重新求值。
+    当你有一些数据需要随着其它数据变动而变动时，使用 computed 属性而不是命令式的 watch 回调。
+
+10. watch  观察和响应 Vue 实例上的数据变动；能监听到任何数值属性的数值更新
+    想要在数据变化响应时，执行异步操作或开销较大的操作
+
+11. methods 是方法
+    只要发生重新渲染，method 调用总会执行该函数。
+
+    当有一个性能开销比较大的的计算属性 A ，它需要遍历一个极大的数组和做大量的计算。然后我们可能有其他的计算属性依赖于 A ，
+    这时候，我们就需要缓存computed！
+    总之：尽量用computed计算属性来监视数据的变化，因为它本身就这个特性，用watch没有computed“自动”，手动设置使代码变复杂。
+    总之：数据量大，需要缓存的时候用computed；每次确实需要重新加载，不需要缓存时用methods。
+    即： watch里面添加输入规则；computed里面放入自动计算；
+
+
+-->
+<div id="app" class="flex-content">
+    <div class="intrest f12 clearfix">
+        <dl class="lf">
+            <dt class="f20" v-cloak >{{e}}</dt>
+            <dd>预期收益(元)</dd>
+        </dl>
+        <dl class="lf">
+            <dt class="f20" v-cloak >{{p}}</dt>
+            <dd>本息共计(元)</dd>
+        </dl>
+    </div>
+
+    <!--  选项卡  -->
+    <div class="select-box" v-show="isWeixin">
+        <div class="slt-title clearfix">
+            <div class="lf title f14">优选项目</div>
+            <div class="rg items-name" @click="selectMenu">
+                <span class="name f15" v-cloak >{{titleName}}</span>
+                <img class="icon" src="border-top@2x.png" :class="[ isActive ? '' : 'icon-open' ]">
+            </div>
+            <span class="f12 infos">{{titleNameTips}}</span>
+        </div>
+        <p class="gutter"></p>
+        <ul class="slt-content" :class="[ isActive ? '' : 'transform' ]" >
+            <li class="f15" v-for="item in items" v-cloak  :class= "{ 'completed': item.completed }" @click="toggleItem(item)">
+                <i></i>
+                <span>{{item.name}}</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="indicator f13">
+        <div class="investment clearfix">
+            <label for="money" class="lf">投资金额</label>
+            <div class="rg f14">
+                <input id="money" v-model="investment" v-cloak class="f13"  type="tel" value="{{investment}}" min="0" maxlength="10">
+                <span class="f12">元</span>
+            </div>
+        </div>
+
+        <div class="day clearfix">
+            <label for="day" class="lf">项目期限</label>
+            <div class="rg f14">
+                <input id="day" v-model="days" class="f13" v-cloak type="tel" maxlength="3" value="{{days}}">
+                <span class="f12" v-if="dateType > 0">个月</span>
+                <span class="f12" v-else>天</span>
+            </div>
+        </div>
+
+        <div class="rate clearfix">
+            <span class="lf label">预期年化
+                <img class="rate-icon" v-show="isWeixin" @click="isInfo()" src="icon-tips.png">
+            </span>
+            <div class="f14 rate-info" v-show="isExplains" :class= "[ isExplains ? 'showed': '' ]">
+                <span class="f14" >预期年化收益率不等于实际收益率，请以实际项目年化收益率为准。</span>
+                <i class="f14 btn" @click="isInfo()">确定</i>
+            </div>
+            <div class="rg f14">
+                <input id="rate" class="f13" v-cloak  type="text" value="{{rate}}" v-model="rate" maxlength="5">
+                <span class="f12">%</span>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" v-show="isWeixin" class="invest invest-bg f18">立即投资</a>
+    <a href="#" v-show="isWeixin" class="invest-txt f13">查看更多理财项目></a>
+
+    <div class="mask" :class="[ isActive ? '' : 'mask-move' ]"  ></div>
+    <div class="mask" v-show="isExplain" style="opacity: 1;z-index: 20" @click="isInfo()" ></div>
+</div>
+<script>
+    var deal_id = 0;
+    var days = 7;
+    var refundDays = 0;
+    var rate = 12;
+    var dateType = 0;
+    var config = "<?= empty($config) ? 0 : $config; ?>";
+//    var deal_id = <?= empty($_GET['deal_id']) ? 0 : $_GET['deal_id']; ?>;
+//    var days = <?= empty($days) ? 7 : $days; ?>;
+//    var refundDays = <?= empty($refundDays) ? 0 : $refundDays; ?>;
+//    var rate = <?= empty($rate) ? 12 : $rate; ?>;
+//    var dateType = <?= empty($dateType) ? 0 : $dateType; ?>;
+//    var config = "<?= empty($config) ? 0 : $config; ?>";
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            deal_id: deal_id,
+            e:"0.0",
+            p:"0.0",
+            investment:'10000',
+            days:days,
+            rate:rate,
+            dateType:dateType,
+            refundDays:refundDays,
+            isWeixin: false,
+            isExplain: false,
+            isExplains: false,
+            isActive: true,
+            titleName : '新手宝',
+            titleNameTips : '新手专享',
+            items: [
+                {name: '新手宝',completed: true, tip: '新手专享', times: '7', percentage: '12'},
+                {name: '旺薪宝',completed: false, tip: '期限1～90天，预期年化5.8％～8%', times: '90', percentage: '8'},
+                {name: '安心宝',completed: false, tip: '期限91～180天，预期年化8.2％～8.5%', times: '180', percentage: '8.5'},
+                {name: '定投宝',completed: false, tip: '期限180天以上，预期年化8.8％～10.2%', times: '365', percentage: '10.2'}
+            ]
+        },
+        created: function(){
+            if (this.deal_id == '') {
+                this.isWeixin = !this.isWeixin;
+            }
+        },
+        methods: {
+            getRate:function(money) {
+                var syl = this.rate;
+                var config1 = config.split('+');
+                for (var i=0;i<config1.length;i++) {
+                    var config2 = config1[i].split(',');
+                    if (money >= config2[0]) {
+                        syl = config2[1];
+                    }
+                }
+                return syl;
+            },
+            selectMenu:function(event) {
+                event.preventDefault();
+                if(!this.isActive) {
+                    this.isActive = true;
+                    return false;
+                }
+                this.isActive = false;
+            },
+            closeSelectMenu:function(){
+                this.isActive = true
+            },
+            toggleItem:function (item) {
+                event.preventDefault();
+                for (var i= 0; i< this.items.length;i++) {
+                    this.items[i].completed = false;
+                }
+                item.completed = true;
+                this.titleName = item.name;
+                this.titleNameTips = item.tip;
+                this.days = item.times;
+                this.rate = item.percentage;
+                this.closeSelectMenu();
+            },
+            isInfo:function() {
+                this.isExplain = !this.isExplain;
+                this.isExplains = !this.isExplains;
+            }
+        },
+        computed:{
+            e:function(){
+                if(this.dateType == 0){
+                    return (this.investment*this.days*(this.rate/100/360)).toFixed(2);
+                } else if (this.dateType == 2) {
+                    var rate = this.getRate(this.investment*1);
+                    return (this.investment*rate*this.refundDays/360/100).toFixed(2);
+                } else {
+                    var rate = this.rate/100/12;
+                    return (((this.investment*rate*Math.pow(1+rate,this.days))/(Math.pow(1+rate,this.days)-1))*this.days-this.investment).toFixed(2);
+                }
+            },
+            p:function(){
+                if(this.dateType == 0){
+                    return (Number(this.investment*this.days*(this.rate/100/360))+Number(this.investment)).toFixed(2);
+                } else if (this.dateType == 2) {
+                    var rate = this.getRate(this.investment*1);
+                    var lixi = this.investment*rate*this.refundDays/360/100;
+                    var benjin = this.investment;
+                    return (lixi*1 + benjin*1).toFixed(2);
+                } else {
+                    var rate = this.rate/100/12;
+                    return ([(this.investment*rate*Math.pow(1+rate,this.days))/(Math.pow(1+rate,this.days)-1)]*this.days).toFixed(2);
+                }
+            }
+        },
+        watch:{
+            investment:function(){
+                this.investment=this.investment.replace(/[^\d]/g,"");
+            },
+            days:function() {
+                this.days=this.days.replace(/[^\d]/g,"");
+            },
+            rate:function() {
+                this.rate=this.rate.replace(/[^(\.|\d)]/g,"");
+            }
+        }
+    });
+
+
+//    createTag ('calculator.css','link');  动态添加文件 减少修改版本号的操作
+    function createTag (baseUrl,type) {
+        const timestamp=new Date().getTime();
+        var oTag = document.createElement(type);
+        if(type=="link"){
+            oTag.href= baseUrl + '?v=' + timestamp;
+            oTag.rel = 'stylesheet';
+        } else if(type=="script") {
+            oTag.src= baseUrl + '?v=' + timestamp;
+            oTag.type = 'text/javascript';
+        }
+        document.getElementsByTagName("head")[0].appendChild(oTag);
+    }
+    //当页面加载状态改变的时候执行这个方法.
+    document.onreadystatechange = subSomething;
+    document.body.style.display = "none";
+    function subSomething() {
+        if(document.readyState == 'complete') //当页面加载状态
+            document.body.style.display = "block";
+    }
+</script>
+</body>
+</html>
