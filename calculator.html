@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="calculator.css">
     <script src="https://m.wangcaigu.com/static/flexibleJs/lib.flexible.js"></script>
     <script src="https://m.wangcaigu.com/static/default/common/js/vue.min.js"></script>
+    <!--<script src="https://unpkg.com/vue/dist/vue.js"></script> -->
 </head>
 <body>
 <!--    vue单页面实例，总结：
@@ -107,17 +108,17 @@
 
     <div class="indicator f13">
         <div class="investment clearfix">
-            <label for="money" class="lf">投资金额</label>
+            <label for="investment" class="lf">投资金额</label>
             <div class="rg f14">
-                <input id="money" v-model="investment" v-cloak class="f13"  type="tel" value="{{investment}}" min="0" maxlength="10">
+                <input :id="investment" v-model="investment" v-cloak class="f13"  type="tel"  min="0" maxlength="10">
                 <span class="f12">元</span>
             </div>
         </div>
 
         <div class="day clearfix">
-            <label for="day" class="lf">项目期限</label>
+            <label for="days" class="lf">项目期限</label>
             <div class="rg f14">
-                <input id="day" v-model="days" class="f13" v-cloak type="tel" maxlength="3" value="{{days}}">
+                <input :id="days" v-model="days" class="f13" v-cloak type="tel" maxlength="3">
                 <span class="f12" v-if="dateType > 0">个月</span>
                 <span class="f12" v-else>天</span>
             </div>
@@ -132,7 +133,7 @@
                 <i class="f14 btn" @click="isInfo()">确定</i>
             </div>
             <div class="rg f14">
-                <input id="rate" class="f13" v-cloak  type="text" value="{{rate}}" v-model="rate" maxlength="5">
+                <input class="f13" v-cloak  type="text" v-model="rate" maxlength="5">
                 <span class="f12">%</span>
             </div>
         </div>
@@ -150,7 +151,7 @@
     var refundDays = 0;
     var rate = 12;
     var dateType = 0;
-    var config = "<?= empty($config) ? 0 : $config; ?>";
+    var config = 0;
 //    var deal_id = <?= empty($_GET['deal_id']) ? 0 : $_GET['deal_id']; ?>;
 //    var days = <?= empty($days) ? 7 : $days; ?>;
 //    var refundDays = <?= empty($refundDays) ? 0 : $refundDays; ?>;
@@ -162,8 +163,6 @@
         el: '#app',
         data: {
             deal_id: deal_id,
-            e:"0.0",
-            p:"0.0",
             investment:'10000',
             days:days,
             rate:rate,
@@ -225,6 +224,7 @@
             isInfo:function() {
                 this.isExplain = !this.isExplain;
                 this.isExplains = !this.isExplains;
+                console.log(this.isExplains)
             }
         },
         computed:{
@@ -269,6 +269,7 @@
 
 //    createTag ('calculator.css','link');  动态添加文件 减少修改版本号的操作
     function createTag (baseUrl,type) {
+
         const timestamp=new Date().getTime();
         var oTag = document.createElement(type);
         if(type=="link"){
